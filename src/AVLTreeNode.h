@@ -18,8 +18,6 @@
 #ifndef SRC_AVLTREENODE_H_
 #define SRC_AVLTREENODE_H_
 
-#include <iostream>
-
 #include "MapEntry.h"
 
 /**
@@ -77,14 +75,6 @@ class AVLTreeNode{
         r = (right_ == nullptr) ? -1 : right_->GetHeight();
         l = (left_ == nullptr) ? -1 : left_->GetHeight();
         height_ = (r > l) ? r + 1 : l + 1;
-    }
-
-
-
-    void Debug() {
-        std::cout << "<DEBUG (" << key_ << ")> ME: " << this << "  HEIGHT: "
-            << height_ << "  LEFT: " << left_ << "  RIGHT: " << right_
-            << std::endl;
     }
 };
 }  // namespace _11c_dev_collections

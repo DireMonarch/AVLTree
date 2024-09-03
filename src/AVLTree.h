@@ -22,7 +22,6 @@
 #include <format>
 #include <stack>
 #include <queue>
-#include <iostream>
 #include <stdexcept>
 #include <iterator>
 #include <cstddef>
@@ -84,10 +83,6 @@ class AVLTree {
         root_ = nullptr;
         count_ = 0;
         traversal_method_ = traversal_method;
-    }
-
-    void Debug() {
-        root_->Debug();
     }
 
     int GetCount() { return count_; }
@@ -490,7 +485,6 @@ class AVLTree {
             case AVLTreeTraversalMethod::TopDown:
                 queue_ = std::queue<pointer>();
                 current_ = start;
-                // current_->Debug();
                 if (current_ != nullptr) {
                     if (current_->GetLeft() != nullptr) {
                         queue_.push(current_->GetLeft());
