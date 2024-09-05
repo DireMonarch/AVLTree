@@ -12,4 +12,6 @@ clean:
 	rm build/test
 
 lint:
+# Requires cpplint to be installed
+# 	See: https://github.com/cpplint/cpplint
 	cpplint src/main.cc src/MapEntry.h src/AVLTreeNode.h src/AVLTree.h
