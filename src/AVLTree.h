@@ -74,41 +74,80 @@ class AVLTree {
     AVLTreeTraversalMethod traversal_method_;
 
  public:
+	/**
+	 * Creates a new AVLTree that defaults to InOrder traversal.
+	 */
     AVLTree() {
         root_ = nullptr;
         count_ = 0;
         traversal_method_ = AVLTreeTraversalMethod::InOrder;
     }
+
+	/**
+	 * Creates a new AVLTree specifying the traversal method of iteration.
+	 * 
+	 * @param TraversalMethod
+	 *            Defines the traversal method used in iteration.
+	 */    
     explicit AVLTree(AVLTreeTraversalMethod traversal_method) {
         root_ = nullptr;
         count_ = 0;
         traversal_method_ = traversal_method;
     }
 
+	/**
+	 * Returns the number of elements in the tree.
+	 * 
+	 * @return Number of elements in the tree.
+	 */
     int GetCount() { return count_; }
+
+	/**
+	 * Returns the current traversal method used for iteration.
+	 * 
+	 * @return Current traversal method for iteration.
+	 */
     AVLTreeTraversalMethod GetTraversalMethod() { return traversal_method_; }
+
+	/**
+	 * Set the traversal method for iteration.
+	 * 
+	 * @param traversalMethod
+	 *            New traversal method.
+	 */
     void SetTraversalMethod(AVLTreeTraversalMethod traversal_method) {
         traversal_method_ = traversal_method;
     }
 
+    /**
+     * Returns the current height of the tree.
+     * 
+     * @return int height of the tree
+     */
     int GetTreeHieight() {
         if (root_ != nullptr) return root_->GetHeight();
         return 0;
     }
 
+    /**
+     * Returns the current balance factor of the root node.
+     * 
+     * @return int balance factor of the root node.
+     */
     int GetTreeBalanceFactor() {
         if (root_ != nullptr) return root_->GetBalanceFactor();
         return 0;
     }
+
     /**
-     * Gets a MapEntry representing they key/value pair indexed by key. This i
-     * the equivalent of an array indexer.
+     * Gets an AVLTreeNode indexed by key. This is the equivalent of an array
+     * indexer.
      *
-     * @param Key
-     *            Key to locate in the tree.
+     * @param Key Key to locate in the tree.
      *
-     * @return MapEntry representing the key/value pair found. nullptr if key i
-     *         not found.
+     * @return AVLTreeNode at key.
+     * 
+     * @throws range_error if no node exists at key
      */
     AVLTreeNode<TKey, TValue> GetNode(TKey key) {
         AVLTreeNode<TKey, TValue> *current = root_;
@@ -128,7 +167,18 @@ class AVLTree {
             (std::format("! Key {} not present in Tree !", key));
     }
 
+    /**
+     * Gets a MapEntry representing they key/value pair indexed by key. This is
+     * the equivalent of an array indexer.
+     *
+     * @param Key Key to locate in the tree.
+     *
+     * @return MapEntry representing the key/value pair found.
+     * 
+     * @throws range_error if no node exists at key
+     */
     MapEntry<TKey, TValue> Get(TKey key) { return GetNode(key).GetMapEntry(); }
+
     /**
      * Returns the key with the minimum value.
      *
@@ -387,6 +437,14 @@ class AVLTree {
         }
     }
 
+    /**
+     * AVL Function to to rotate right at a given node, with a given parent.
+     *      used in the balancing algorithm.
+     * 
+     * @param *node pointer to AVLTreeNode to rotate
+     * @param *parent pointer to AVLTreeNode of the parent to *node
+     *          if parent is nullptr, the parent is root_
+     */
     void RotateRight(AVLTreeNode<TKey, TValue> *node,
             AVLTreeNode<TKey, TValue> *parent) {
         AVLTreeNode<TKey, TValue> * left_node = node->GetLeft();
@@ -406,6 +464,14 @@ class AVLTree {
         }
     }
 
+    /**
+     * AVL Function to to rotate left at a given node, with a given parent.
+     *      used in the balancing algorithm.
+     * 
+     * @param *node pointer to AVLTreeNode to rotate
+     * @param *parent pointer to AVLTreeNode of the parent to *node
+     *          if parent is nullptr, the parent is root_
+     */
     void RotateLeft(AVLTreeNode<TKey, TValue> *node,
             AVLTreeNode<TKey, TValue> *parent) {
         AVLTreeNode<TKey, TValue> * right_node = node->GetRight();
@@ -428,7 +494,9 @@ class AVLTree {
 
     // ITERATOR
 
-
+    /**
+     * Iterator for AVLTree.  Used by builtin C++ for ( A : B ) loops.
+     */
     struct Iterator{
         using iterator_category = std::forward_iterator_tag;
         using difference_type = std::ptrdiff_t;
@@ -436,22 +504,47 @@ class AVLTree {
         using pointer = AVLTreeNode<TKey, TValue>*;
         using reference = AVLTreeNode<TKey, TValue>&;
 
+        /**
+         * Constructor.
+         * 
+         * @param start
+         *          AVLTreeNode where the iteration will start.
+         * 
+         * @param traversal_method
+         *          AVLTreeTraversalMethod that dictates the order of
+         *              returned nodes.
+         */
         Iterator(pointer start, AVLTreeTraversalMethod traversal_method) {
             // current_ = start;
             traversal_method_ = traversal_method;
             SetInitalLocation(start);
         }
 
+        /**
+         * * operator overload required for standard iterator
+         */
         reference operator*() const { return *current_; }
+
+        /**
+         * -> operator overload required for standard iterator
+         */
         pointer operator->() { return current_; }
 
-        // Pre-increment
+        /**
+         * Post increment ++ operator overload required for standard Iterator.
+         */
         Iterator& operator++() { MoveNext(); return *this; }
 
+        /**
+         * == operator overload required for standard iterator
+         */
         friend bool operator== (const Iterator &a, const Iterator &b) {
             return a.current_ == b.current_;
         }
 
+        /**
+         * += operator overload required for standard iterator
+         */
         friend bool operator!= (const Iterator &a, const Iterator &b) {
             return a.current_ != b.current_;
         }
@@ -463,7 +556,10 @@ class AVLTree {
 
         AVLTreeTraversalMethod traversal_method_;
 
-
+        /**
+         * Sets the initial position of the Iterator, give start, based on
+         *  the traversal_method_
+         */
         void SetInitalLocation(pointer start) {
             switch (traversal_method_) {
             case AVLTreeTraversalMethod::InOrder:
@@ -500,6 +596,9 @@ class AVLTree {
             }  // switch
         }
 
+        /**
+         * Moves to the next Node, based on the traversal_method_
+         */
         void MoveNext() {
             switch (traversal_method_) {
             case AVLTreeTraversalMethod::InOrder:
@@ -543,6 +642,10 @@ class AVLTree {
             }  // switch
         }
 
+        /**
+         * Helper function that adds all left nodes, from the node on the top
+         *  of the stack, to the stack.
+         */
         void StackLeftToNull() {
             // equiv to peek, std::stack doesn't return on .pop.
             // .top used to get value
@@ -556,9 +659,14 @@ class AVLTree {
             }
         }
 
-        // equiv to peek, std::stack doesn't return on .pop.
-        // .top used to get value
+
+        /**
+         * Helper function that adds all right nodes, from the node on the top
+         *  of the stack, to the stack.
+         */
         void StackRightToNull() {
+            // equiv to peek, std::stack doesn't return on .pop.
+            // .top used to get value
             pointer current = stack_.top();
             if (current != nullptr) {
                 current = current->GetRight();
@@ -570,7 +678,24 @@ class AVLTree {
         }
     };
 
+    /**
+     * Returns an Iterator at the begining of the tree, given node root_.
+     *  The Iterator constructor will move to the proper first node, given
+     *  traversal_method_.
+     * 
+     * This function is needed for the C++ build it for (a : b) syntax.
+     * 
+     * @returns Iterator
+     */
     Iterator begin() { return Iterator(root_, traversal_method_); }
+
+    /**
+     * Returns an Iterator past the end of the tree.
+     * 
+     * This function is needed for the C++ build it for (a : b) syntax.
+     * 
+     * @returns Iterator
+     */
     Iterator end() { return Iterator(nullptr, traversal_method_); }
 };
 

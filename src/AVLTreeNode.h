@@ -20,15 +20,14 @@
 
 #include "MapEntry.h"
 
+
+namespace _11c_dev_collections {
+
 /**
  * Node used in an AVLTree.
  *
  * @param <TKey>	Generic type representing the key used for sorting.  Must implement <, =, and >.
  * @param <TValue>	Generic type representing the data being stored.
- */
-namespace _11c_dev_collections {
-/**
- * Node used in an AVLTree.
  */
 template <typename TKey, typename TValue>
 class AVLTreeNode{
@@ -40,6 +39,12 @@ class AVLTreeNode{
     int height_;
 
  public:
+	/**
+	 * Creates a leaf node with no left or right children.
+	 * 
+	 * @param Key		Key used for sorting.  Must be Comparable.
+	 * @param Value		Data being stored in the Tree.
+	 */
     AVLTreeNode(TKey key, TValue value) {
         key_ = key;
         value_ = value;
@@ -48,17 +53,65 @@ class AVLTreeNode{
         CalculateHeight();
     }
 
-
+	/**
+	 * Get the value of the TreeNode.
+	 * 
+	 * @return Value (TValue).
+	 */
     TValue GetValue() { return value_; }
+
+    /**
+	 * Set the value of the TreeNode.
+	 * 
+	 * @param value Set the nodes value.
+	 */
     void SetValue(TValue value) { value_ = value; }
+
+	/**
+	 * Get the key of the TreeNode.
+	 * 
+	 * @return Key.
+	 */    
     TKey GetKey() { return key_; }
 
+    /**
+	 * Get the Left child TreeNode.  The Left child is the "smaller" key.
+	 * 
+	 * @return Left child node.
+	 */
     AVLTreeNode<TKey, TValue>* GetLeft() { return left_; }
+
+	/**
+	 * Get the Right child TreeNode.  The Right child is the "larger" key.
+	 * 
+	 * @return Right child node.
+	 */      
     AVLTreeNode<TKey, TValue>* GetRight() { return right_; }
+
+	/**
+	 * Set the Left child TreeNode.  The Left child is the "smaller" key.
+	 * 
+	 * @param node	Set the left child node.
+	 */    
     void SetLeft(AVLTreeNode<TKey, TValue> *node) { left_ = node; }
+
+  	/**
+	 * Set the Right child TreeNode.  The Right child is the "larger" key.
+
+	 * @param node	Set the right child node.
+	 */
     void SetRight(AVLTreeNode<TKey, TValue> *node) { right_ = node; }
 
+	/**
+	 * @return Height of the node.
+	 */
     int GetHeight() { return height_; }
+
+	/**
+	 * Get the balance factor of the current node.  Compares height if right and left child nodes.  Used to determine how balanced this node is.
+	 * 
+	 * @return	Balance factor of the node.  
+	 */    
     int GetBalanceFactor() {
         int r, l;
         r = (right_ == nullptr) ? -1 : right_->GetHeight();
@@ -66,10 +119,18 @@ class AVLTreeNode{
         return l - r;
     }
 
+	/**
+	 * Get a MapEntry representing teh key / value pair of this TreeNode.
+	 * 
+	 * @return	MapEntry representing the Key and Value of the node.
+	 */
     MapEntry<TKey, TValue> GetMapEntry() {
         return MapEntry<TKey, TValue>(key_, value_);
     }
 
+	/**
+	 * Recalcualtes the height of the node.
+	 */
     void CalculateHeight() {
         int r, l;
         r = (right_ == nullptr) ? -1 : right_->GetHeight();

@@ -16,11 +16,9 @@
  */
 
 
-#include "AVLTreeNode.h"
 #include "AVLTree.h"
 #include <iostream>
 #include <string>
-#include <memory>
 
 /**
  * Used for testing only, not part of the actual package
